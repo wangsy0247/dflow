@@ -303,6 +303,7 @@ class ScriptOPTemplate(OPTemplate):
             image_pull_policy: Optional[str] = None,
             requests: Dict[str, str] = None,
             limits: Dict[str, str] = None,
+            pod_spec_patch: Optional[str] = None,
             envs: Dict[str, Union[str, Secret, V1EnvVarSource]] = None,
             init_containers: Optional[List[V1alpha1UserContainer]] = None,
             sidecars: Optional[List[V1alpha1UserContainer]] = None,
@@ -329,6 +330,7 @@ class ScriptOPTemplate(OPTemplate):
         self.image_pull_policy = image_pull_policy
         self.requests = requests
         self.limits = limits
+        self.pod_spec_patch = pod_spec_patch
         self.envs = envs
         if init_containers is None:
             init_containers = []
@@ -420,6 +422,7 @@ class ScriptOPTemplate(OPTemplate):
             return V1alpha1Template(name=self.name,
                                     metadata=V1alpha1Metadata(
                                         annotations=self.annotations),
+                                    pod_spec_patch=self.pod_spec_patch,
                                     inputs=self.inputs.convert_to_argo(),
                                     outputs=self.outputs.convert_to_argo(),
                                     timeout=self.timeout,
@@ -457,6 +460,7 @@ class ScriptOPTemplate(OPTemplate):
                                      annotations=self.annotations,
                                      labels=self.labels),
                                  node_selector=self.node_selector,
+                                 pod_spec_patch=self.pod_spec_patch,
                                  tolerations=self.tolerations,
                                  affinity=self.affinity,
                                  inputs=self.inputs.convert_to_argo(),
@@ -498,6 +502,7 @@ class ScriptOPTemplate(OPTemplate):
             "retry_strategy": self.retry_strategy,
             "resource": self.resource,
             "image_pull_policy": self.image_pull_policy,
+            "pod_spec_patch": self.pod_spec_patch,
             "requests": self.requests,
             "limits": self.limits,
             "envs": self.envs,
@@ -568,6 +573,7 @@ class ShellOPTemplate(ScriptOPTemplate):
         timeout: Optional[str] = None,
         retry_strategy: Optional[V1alpha1RetryStrategy] = None,
         image_pull_policy: Optional[str] = None,
+        pod_spec_patch: Optional[str] = None,
         requests: Dict[str, str] = None,
         limits: Dict[str, str] = None,
         envs: Dict[str, str] = None,
@@ -586,7 +592,7 @@ class ShellOPTemplate(ScriptOPTemplate):
             labels=labels, node_selector=node_selector, affinity=affinity,
             tolerations=tolerations, requests=requests, limits=limits,
             envs=envs, init_containers=init_containers, sidecars=sidecars,
-            script_rendered=script_rendered,
+            script_rendered=script_rendered,pod_spec_patch=pod_spec_patch,
         )
 
 
@@ -648,6 +654,7 @@ class PythonScriptOPTemplate(ScriptOPTemplate):
         init_containers: Optional[List[V1alpha1UserContainer]] = None,
         sidecars: Optional[List[V1alpha1UserContainer]] = None,
         script_rendered: bool = False,
+        pod_spec_patch: Optional[str] = None,
     ) -> None:
         if command is None:
             command = ["python3"]
@@ -660,7 +667,7 @@ class PythonScriptOPTemplate(ScriptOPTemplate):
             labels=labels, node_selector=node_selector, affinity=affinity,
             tolerations=tolerations, requests=requests, limits=limits,
             envs=envs, init_containers=init_containers, sidecars=sidecars,
-            script_rendered=script_rendered,
+            script_rendered=script_rendered,pod_spec_patch=pod_spec_patch,
         )
 
 
@@ -707,5 +714,6 @@ class ContainerOPTemplate(ScriptOPTemplate):
                 "container", {}).get("env", [])},
             "init_containers": d.get("initContainers", None),
             "sidecars": d.get("sidecars", None),
+            "pod_spec_patch": d.get("podSpecPatch", None),
         }
         return cls(**kwargs)
