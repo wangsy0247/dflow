@@ -206,6 +206,7 @@ class PythonOPTemplate(PythonScriptOPTemplate):
                  volumes: Optional[List[V1Volume]] = None,
                  mounts: Optional[List[V1VolumeMount]] = None,
                  image_pull_policy: Optional[str] = None,
+                 pod_spec_patch: Optional[str] = None,
                  requests: Dict[str, str] = None,
                  limits: Dict[str, str] = None,
                  upload_dflow: bool = True,
@@ -241,7 +242,7 @@ class PythonOPTemplate(PythonScriptOPTemplate):
         super().__init__(
             name="%s-%s" % (class_name.replace("_", "-"), randstr()),
             inputs=Inputs(), outputs=Outputs(), volumes=volumes, mounts=mounts,
-            requests=requests, limits=limits, envs=envs,
+            requests=requests, limits=limits, envs=envs,pod_spec_patch=pod_spec_patch,
             init_containers=init_containers, sidecars=sidecars, labels=labels,
             annotations=annotations, node_selector=node_selector,
             tolerations=tolerations, affinity=affinity)
