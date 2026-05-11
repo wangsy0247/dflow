@@ -14,7 +14,8 @@ class InitArtifactForSlices(PythonScriptOPTemplate):
                  tmp_root="/tmp"):
         name = template.name
         super().__init__(name="%s-init-artifact" % name, image=image,
-                         command=command, image_pull_policy=image_pull_policy)
+                         command=command, image_pull_policy=image_pull_policy,
+                         node_selector=template.node_selector)
         self.origin = template
         self.key = key
         self.sliced_output_artifact = sliced_output_artifact \
@@ -292,9 +293,10 @@ with open(r'%s/outputs/parameters/concat_%s', 'w') as f:
 
 class CheckNumSuccess(ShellOPTemplate):
     def __init__(self, name="check-num-success", image=None,
-                 image_pull_policy=None):
+                 image_pull_policy=None, node_selector=None):
         super().__init__(name=name, image=image,
-                         image_pull_policy=image_pull_policy)
+                         image_pull_policy=image_pull_policy,
+                         node_selector=node_selector)
         self.command = ["python3"]
         self.script = "import json\n"
         self.script += "succ = '''{{inputs.parameters.success}}'''\n"
@@ -312,9 +314,10 @@ class CheckNumSuccess(ShellOPTemplate):
 
 class CheckSuccessRatio(ShellOPTemplate):
     def __init__(self, name="check-success-ratio", image=None,
-                 image_pull_policy=None):
+                 image_pull_policy=None, node_selector=None):
         super().__init__(name=name, image=image,
-                         image_pull_policy=image_pull_policy)
+                         image_pull_policy=image_pull_policy,
+                         node_selector=node_selector)
         self.command = ["python3"]
         self.script = "import json\n"
         self.script += "succ = '''{{inputs.parameters.success}}'''\n"
