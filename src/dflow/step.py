@@ -964,7 +964,9 @@ class Step:
                     name="%s-check-success-ratio" % self.template.name,
                     image=self.util_image,
                     image_pull_policy=self.util_image_pull_policy,
-                    node_selector=self.template.node_selector),
+                    node_selector=self.template.node_selector,
+                    requests=self.template.requests,
+                    limits=self.template.limits),
                 parameters={
                     "success": self.outputs.parameters["dflow_success_tag"],
                     "total": total,

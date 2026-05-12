@@ -15,7 +15,9 @@ class InitArtifactForSlices(PythonScriptOPTemplate):
         name = template.name
         super().__init__(name="%s-init-artifact" % name, image=image,
                          command=command, image_pull_policy=image_pull_policy,
-                         node_selector=template.node_selector)
+                         node_selector=template.node_selector,
+                         requests=template.requests,
+                         limits=template.limits)
         self.origin = template
         self.key = key
         self.sliced_output_artifact = sliced_output_artifact \
@@ -293,10 +295,13 @@ with open(r'%s/outputs/parameters/concat_%s', 'w') as f:
 
 class CheckNumSuccess(ShellOPTemplate):
     def __init__(self, name="check-num-success", image=None,
-                 image_pull_policy=None, node_selector=None):
+                 image_pull_policy=None, node_selector=None,
+                 requests=None, limits=None):
         super().__init__(name=name, image=image,
                          image_pull_policy=image_pull_policy,
-                         node_selector=node_selector)
+                         node_selector=node_selector,
+                         requests=requests,
+                         limits=limits)
         self.command = ["python3"]
         self.script = "import json\n"
         self.script += "succ = '''{{inputs.parameters.success}}'''\n"
@@ -314,10 +319,13 @@ class CheckNumSuccess(ShellOPTemplate):
 
 class CheckSuccessRatio(ShellOPTemplate):
     def __init__(self, name="check-success-ratio", image=None,
-                 image_pull_policy=None, node_selector=None):
+                 image_pull_policy=None, node_selector=None,
+                 requests=None, limits=None):
         super().__init__(name=name, image=image,
                          image_pull_policy=image_pull_policy,
-                         node_selector=node_selector)
+                         node_selector=node_selector,
+                         requests=requests,
+                         limits=limits)
         self.command = ["python3"]
         self.script = "import json\n"
         self.script += "succ = '''{{inputs.parameters.success}}'''\n"
