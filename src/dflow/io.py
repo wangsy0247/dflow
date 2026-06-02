@@ -322,7 +322,7 @@ class IfExpression(ArgoVar):
             _else: Union[str, ArgoVar],
     ) -> None:
         if isinstance(_if, (InputParameter, OutputParameter)):
-            self._if = "%s == 'true'" % _if.expr
+            self._if = "string(%s) == 'true'" % _if.expr
         elif isinstance(_if, ArgoVar):
             self._if = _if.expr
         else:
